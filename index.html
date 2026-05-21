@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhotoPedagogy Remix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Nunito:wght@300;400;500;600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink: #CB216E;
+    --bg: #f8f6f2;
+    --surface: #ffffff;
+    --text: #1c1c1a;
+    --muted: #9a9690;
+    --border: #e2dfd9;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    overflow: hidden;
+    max-width: 100vw;
+  }
+
+  /* ── LAYOUT ── */
+  .app {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100dvh;
+    height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 36px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .wordmark {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .wordmark .light {
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .wordmark .remix-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-left: 10px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+  }
+  .wordmark span {
+    color: var(--pink);
+  }
+
+  .remix-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    border-radius: 2px;
+  }
+  .remix-btn:hover {
+    border-color: var(--pink);
+    color: var(--pink);
+  }
+  .remix-btn svg {
+    transition: transform 0.4s;
+  }
+  .remix-btn:hover svg {
+    transform: rotate(180deg);
+  }
+
+  /* ── MAIN STAGE ── */
+  main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+    min-height: 0;
+    gap: 0;
+  }
+
+  /* Image panel */
+  .image-panel {
+    position: relative;
+    overflow: hidden;
+    background: #ffffff;
+    padding: 28px 24px 44px 36px;
+  }
+
+  .image-panel img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    transition: opacity 0.35s ease;
+  }
+  
+  .image-panel img.fading {
+    opacity: 0;
+  }
+
+  .image-panel img.fading {
+    opacity: 0;
+  }
+
+  .image-caption {
+    position: absolute;
+    bottom: 20px;
+    left: 36px;
+    right: 24px;
+    padding: 0;
+    font-family: 'Nunito', sans-serif;
+    font-size: 10.5px;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* Quote panel */
+  .quote-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 56px 64px 56px 56px;
+    overflow-y: auto;
+    border-left: 1px solid var(--border);
+    position: relative;
+    min-width: 0;
+  }
+
+  .quote-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 80px;
+    line-height: 0.6;
+    color: var(--pink);
+    margin-bottom: 24px;
+    opacity: 0.5;
+    transition: opacity 0.35s;
+  }
+
+  blockquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 2.2vw, 26px);
+    font-style: italic;
+    line-height: 1.65;
+    color: var(--text);
+    transition: opacity 0.35s ease;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-width: 0;
+  }
+
+  blockquote.fading {
+    opacity: 0;
+  }
+
+  .attribution {
+    margin-top: 32px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--pink);
+    transition: opacity 0.35s ease;
+  }
+
+  .attribution.fading {
+    opacity: 0;
+  }
+
+
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 14px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    gap: 16px;
+  }
+
+  .footer-note {
+    font-family: 'Nunito', sans-serif;
+    font-size: 10.5px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 680px;
+  }
+
+  .footer-link {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.2s;
+  }
+  .footer-link:hover {
+    color: var(--pink);
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 700px) {
+    html, body {
+      overflow-x: hidden;
+      overflow-y: auto;
+      max-width: 100vw;
+      height: auto;
+    }
+    .app {
+      height: auto;
+      min-height: 100dvh;
+      width: 100vw;
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+    header {
+      padding: 14px 16px;
+      gap: 8px;
+    }
+    .wordmark {
+      font-size: 12px;
+      letter-spacing: 0.05em;
+    }
+    .wordmark .remix-label { display: none; }
+    .about-btn, .remix-btn {
+      font-size: 10px;
+      padding: 7px 12px;
+      letter-spacing: 0.08em;
+    }
+    main {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+      width: 100vw;
+      max-width: 100vw;
+    }
+    .image-panel {
+      height: 80vw;
+      min-height: 280px;
+      max-height: 420px;
+      padding: 16px 16px 48px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .image-caption {
+      left: 16px;
+      right: 16px;
+      bottom: 14px;
+      font-size: 10px;
+    }
+    .quote-panel {
+      padding: 32px 24px 48px;
+      border-left: none;
+      border-top: 1px solid var(--border);
+      width: 100%;
+      max-width: 100vw;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    .quote-mark {
+      font-size: 56px;
+      margin-bottom: 16px;
+    }
+    blockquote {
+      font-size: clamp(18px, 5.5vw, 24px);
+      line-height: 1.45;
+      max-width: 100%;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .attribution {
+      margin-top: 20px;
+      font-size: 10px;
+    }
+    footer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 14px 16px;
+    }
+    .footer-note { font-size: 10px; }
+  }
+
+  /* ── ABOUT BUTTON ── */
+  .about-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Quicksand', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 9px 20px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    border-radius: 2px;
+  }
+  .about-btn:hover {
+    border-color: var(--pink);
+    color: var(--pink);
+  }
+
+  /* ── ABOUT OVERLAY ── */
+  .about-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(248,246,242,0.96);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(4px);
+  }
+  .about-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .about-panel {
+    position: relative;
+    max-width: 640px;
+    width: calc(100% - 48px);
+    max-height: calc(100dvh - 80px);
+    overflow-y: auto;
+    padding: 64px 72px;
+    background: #fff;
+    border: 1px solid var(--border);
+  }
+  .about-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: none;
+    border: none;
+    font-size: 26px;
+    font-weight: 300;
+    color: var(--muted);
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+    transition: color 0.2s;
+  }
+  .about-close:hover { color: var(--pink); }
+
+  .about-title {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--pink);
+    margin-bottom: 32px;
+  }
+  .about-content p {
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.75;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+  .about-content a {
+    color: var(--pink);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(203,33,110,0.25);
+    transition: border-color 0.2s;
+  }
+  .about-content a:hover { border-color: var(--pink); }
+
+  .about-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-style: italic;
+    line-height: 1.55;
+    color: var(--text);
+    border-left: 3px solid var(--pink);
+    padding: 4px 0 4px 24px;
+    margin: 32px 0;
+  }
+  .about-quote cite {
+    display: block;
+    margin-top: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--pink);
+  }
+  .about-sign-off {
+    font-family: 'Cormorant Garamond', serif !important;
+    font-size: 20px !important;
+    font-style: italic;
+    color: var(--text) !important;
+    margin-top: 32px !important;
+  }
+  .about-credit {
+    margin-top: 40px !important;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 11px !important;
+    color: var(--muted) !important;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 700px) {
+    .about-panel { padding: 48px 28px 40px; }
+    .about-quote { font-size: 18px; }
+  }
+
+  /* ── LIGHTBOX (mobile only) ── */
+  @media (max-width: 700px) {
+    .image-panel { cursor: zoom-in; }
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.96);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 100vw;
+      max-height: 100dvh;
+      object-fit: contain;
+      display: block;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 32px;
+      font-weight: 300;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px 8px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div class="wordmark">Photo<span class="light">Pedagogy</span><span class="remix-label">Remix</span></div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="about-btn" onclick="toggleAbout()" aria-label="About this app">About</button>
+      <button class="remix-btn" onclick="remix()" aria-label="Generate new pairing">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1 4h10M11 1l3 3-3 3"/>
+        <path d="M15 12H5M5 15l-3-3 3-3"/>
+      </svg>
+      Remix
+    </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="image-panel" onclick="openLightbox()">
+      <img id="img" src="" alt="" />
+      <div class="image-caption" id="caption"></div>
+    </div>
+    <div class="quote-panel">
+      <div class="quote-mark">&ldquo;</div>
+      <blockquote id="quote"></blockquote>
+      <div class="attribution" id="attr"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-note">PhotoPedagogy Remix is a free, non-commercial educational resource. Images are reproduced at low resolution for educational purposes. If you own the rights to an image shown here and would like it removed, please <a href="https://www.photopedagogy.com/contact.html" style="color:inherit">contact us</a> and we will act promptly.</p>
+    <a class="footer-link" href="https://www.photopedagogy.com" target="_blank"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:6px"><line x1="2" y1="12" x2="12" y2="2"/><polyline points="4,2 12,2 12,10"/></svg>PhotoPedagogy</a>
+  </footer>
+
+  <!-- About overlay -->
+  <div class="about-overlay" id="aboutOverlay" aria-hidden="true">
+    <div class="about-panel">
+      <button class="about-close" onclick="toggleAbout()" aria-label="Close">&times;</button>
+      <div class="about-content">
+        <h1 class="about-title">About</h1>
+        <p>PhotoPedagogy Remix is directly inspired by Alan Huck and Jonas Feige&rsquo;s <a href="https://themutetestimony.com/" target="_blank" rel="noopener">The Mute Testimony</a>. What happens when pictures meet words &mdash; especially when the pictures are drawn from the histories of photography and the words belong to a multitude of commentators on the medium?</p>
+        <p>A random association of words and images generates productive tension, engaging the mind&rsquo;s pattern-making capabilities. How does this relate to that?</p>
+        <blockquote class="about-quote">&ldquo;Photographs rely on chance, more or less.&rdquo;<cite>&mdash;&thinsp;Threshold Concept&nbsp;#6, PhotoPedagogy</cite></blockquote>
+        <p>As the name suggests, PhotoPedagogy Remix takes selected quotations from <a href="https://www.photopedagogy.com" target="_blank" rel="noopener">photopedagogy.com</a> and pairs them with photographic images also referenced there. Over the years, the site has grown into a substantial resource, free to teachers and students everywhere. This app is a compressed, randomised version of the image&thinsp;/&thinsp;text combinations on the website.</p>
+        <p>We have reproduced images for which we don&rsquo;t own the rights in the hope that visitors have access to a wide range of imagery, and that the various rights holders grant us permission to share these images freely &mdash; for educational purposes and not for profit. If you own the rights to any image shown here and would like it removed, please <a href="https://www.photopedagogy.com/contact.html" target="_blank" rel="noopener">get in touch</a>.</p>
+        <p class="about-sign-off">Remix to your heart&rsquo;s content.</p>
+        <p class="about-credit">PhotoPedagogy Remix &mdash; Jon Nicholls &amp; Chris Francis &mdash; <a href="https://www.photopedagogy.com" target="_blank" rel="noopener">photopedagogy.com</a></p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Lightbox (mobile) -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close">&times;</button>
+    <img id="lightboxImg" src="" alt="" onclick="event.stopPropagation()">
+  </div>
+</div>
+
+<script>
+const IMAGES = [
+  { file: 'Aapo Huhta, from Block, 2015.jpg', caption: 'Aapo Huhta, from Block, 2015' },
+  { file: 'Aida Muluneh, The Certainty of the Uncertainty, 2019.jpg', caption: 'Aida Muluneh, The Certainty of the Uncertainty, 2019' },
+  { file: 'Alejandra Carles-Tolra, Untitled from Where We Belong, 2017.jpg', caption: 'Alejandra Carles-Tolra, Untitled from Where We Belong, 2017' },
+  { file: 'Alex Prager, Far, Far Away, 2019.jpg', caption: 'Alex Prager, Far, Far Away, 2019' },
+  { file: 'Anastasia Samoylova, Matterhorns,2019.jpg', caption: 'Anastasia Samoylova, Matterhorns, 2019' },
+  { file: 'Anna Atkins, Pteris Rotundifolia (Jamaica) from the album Cyanotypes of British and Foreign Plants and Ferns, 1853.jpg', caption: 'Anna Atkins, Pteris Rotundifolia (Jamaica), Cyanotypes of British and Foreign Ferns, 1853' },
+  { file: 'Anonymous vernacular photograph.jpg', caption: 'Anonymous vernacular photograph' },
+  { file: 'Berenice Abbott, Untitled (Science), 1958-61.jpg', caption: 'Berenice Abbott, Untitled (Science), 1958–61' },
+  { file: 'Boris Mikhailov, from Yesterday_s Sandwich, Late 1960s and early 1970s.jpg', caption: "Boris Mikhailov, from Yesterday's Sandwich, late 1960s–early 1970s" },
+  { file: 'Brea Souders, from Field Notes, 2021-2023.jpg', caption: 'Brea Souders, from Field Notes, 2021–2023' },
+  { file: 'Carrie Mae Weems, from Slow Fade To Black, 2010.jpg', caption: 'Carrie Mae Weems, from Slow Fade To Black, 2010' },
+  { file: 'Chris Dorley Brown, from The Corners, 2009-2017.jpg', caption: 'Chris Dorley Brown, from The Corners, 2009–2017' },
+  { file: 'Chris Killip, Youth on Wall, Tyneside, 1976.jpg', caption: 'Chris Killip, Youth on Wall, Tyneside, 1976' },
+  { file: 'Clarence John Laughlin, The Language of Light, 1952.jpg', caption: 'Clarence John Laughlin, The Language of Light, 1952' },
+  { file: 'Cortis & Sonderegger, Making of \u201eTsunami\u201c (by Unknown Tourist, 2004).jpg', caption: 'Cortis & Sonderegger, Making of \u201cTsunami\u201d (by Unknown Tourist, 2004)' },
+  { file: 'Dorothea Lange, Funeral Cortege, End of an era in small vallery town, California, 1938.jpg', caption: 'Dorothea Lange, Funeral Cortege, End of an Era in a Small Valley Town, California, 1938' },
+  { file: 'Eadweard Muybridge, The Horse in Motion, 1878.jpg', caption: 'Eadweard Muybridge, The Horse in Motion, 1878' },
+  { file: 'Eli Lotar, Asleep, Spain, Fourth Journey, February 1936.jpg', caption: 'Eli Lotar, Asleep, Spain, Fourth Journey, February 1936' },
+  { file: 'Emeke Okereke, A Study of Things (Kettle and Stool for observing Wudu), Ferkessedougou, Abidjan, 2014.jpg', caption: 'Emeke Okereke, A Study of Things (Kettle and Stool for Observing Wudu), Ferkessedougou, 2014' },
+  { file: 'Erwin Blumenfeld, Untitled, New York, 1953.jpg', caption: 'Erwin Blumenfeld, Untitled, New York, 1953' },
+  { file: 'Gary Winogrand, Texas State Fair, Dallas, 1969.jpg', caption: 'Gary Winogrand, Texas State Fair, Dallas, 1969' },
+  { file: 'Gyorgy Kepes, Untitled, 1981.jpg', caption: 'Gy\u00f6rgy Kepes, Untitled, 1981' },
+  { file: 'Harold Edgerton, High-speed photography, bullet and banana, 1978.jpg', caption: 'Harold Edgerton, Bullet and Banana, 1978' },
+  { file: 'Hippolyte Bayard, Drowned,1840.jpg', caption: 'Hippolyte Bayard, Self-Portrait as a Drowned Man, 1840' },
+  { file: 'Ibrahim Azab, FOPDTMM, 2019.jpg', caption: 'Ibrahim Azab, FOPDTMM, 2019' },
+  { file: 'James F Ryder, Atlantic & Great Western Railway. Albumen print, 1862.jpg', caption: 'James F. Ryder, Atlantic & Great Western Railway, albumen print, 1862' },
+  { file: 'Jason Fulford, San FRancisco, 2013.jpg', caption: 'Jason Fulford, San Francisco, 2013' },
+  { file: 'Jiro Takamatsu, Photograph of Photograph, 1973.jpg', caption: 'Jiro Takamatsu, Photograph of Photograph, 1973' },
+  { file: 'Joel Meyerowitz, Paris, 1967.jpg', caption: 'Joel Meyerowitz, Paris, 1967' },
+  { file: 'John Baldessari, Kissing Series,  Simone Palm Trees (Near), 1975.jpg', caption: 'John Baldessari, Kissing Series: Simone Palm Trees (Near), 1975' },
+  { file: 'John Baldessari, photo by Shunk-Kender, Hands Framing New York Harbour, 1971.jpg', caption: 'John Baldessari (photo by Shunk-Kender), Hands Framing New York Harbour, 1971' },
+  { file: 'Johnny Pitts, from Home Is Not A Place, 2021.jpg', caption: 'Johnny Pitts, from Home Is Not a Place, 2021' },
+  { file: 'Judith Joy Ross, Timmy Wright, Shop Class, Hazleton High School, 1992.jpg', caption: 'Judith Joy Ross, Timmy Wright, Shop Class, Hazleton High School, 1992' },
+  { file: 'Julian Mack, Trinity Site Atomic Bomb Test, July 16, 1945.jpg', caption: 'Julian Mack, Trinity Site Atomic Bomb Test, 16 July 1945' },
+  { file: 'Keld Helmer-Petersen, Wires, Copenhagen, 1950s.jpg', caption: 'Keld Helmer-Petersen, Wires, Copenhagen, 1950s' },
+  { file: 'Larry Sultan, Business Page, 1985.jpg', caption: 'Larry Sultan, Business Page, 1985' },
+  { file: 'Lee Friedlander, Knoxville, Tennessee, 1971.jpg', caption: 'Lee Friedlander, Knoxville, Tennessee, 1971' },
+  { file: 'Lewis Bush, Natural History Museum London reclaimed by nature, 2021.jpg', caption: 'Lewis Bush, Natural History Museum London Reclaimed by Nature, 2021' },
+  { file: 'Luigi Ghirri, Trevigliano Mazzano, Portoghesi, case popolari, 1985.jpg', caption: 'Luigi Ghirri, Trevigliano Mazzano, Portoghesi, Case Popolari, 1985' },
+  { file: 'Mandy Williams, Disrupted Landscapes #3, 2020-ongoing.jpg', caption: 'Mandy Williams, Disrupted Landscapes #3, 2020–ongoing' },
+  { file: 'Marco Breuer, Untitled Chemigram, 1999.jpg', caption: 'Marco Breuer, Untitled (Chemigram), 1999' },
+  { file: 'Mario Bellusi, Modern traffic in ancient Rome, 1930.jpg', caption: 'Mario Bellusi, Modern Traffic in Ancient Rome, 1930' },
+  { file: 'Marysa Dowling, Hands, from Liberadxs, 2021 - ongoing.jpg', caption: 'Marysa Dowling, Hands, from Liberadxs, 2021–ongoing' },
+  { file: 'Mike Mandel and Larry Sultan, from Evidence, 1977.jpg', caption: 'Mike Mandel and Larry Sultan, from Evidence, 1977' },
+  { file: 'Molly Landreth, Claire, Bellingham, WA, 2006.jpg', caption: 'Molly Landreth, Claire, Bellingham, WA, 2006' },
+  { file: 'Odette Elix England, from Woman Wearing Ring Shields Face, 2023.jpg', caption: 'Odette Elix England, from Woman Wearing Ring Shields Face, 2023' },
+  { file: 'Paul-Nouge-Subversion-of-Images-1929-30.jpg', caption: 'Paul Nougé, from the Subversion of Images, 1929–30' },
+  { file: 'Penelope Umbrico, Sunset Portraits From Sunset Pictures On Flickr, 2010-ongoing.jpg', caption: 'Penelope Umbrico, Sunset Portraits from Sunset Pictures on Flickr, 2010–ongoing' },
+  { file: 'Peter Fraser, Communications Satellite, Surrey University, UK, 2009.jpg', caption: 'Peter Fraser, Communications Satellite, Surrey University, UK, 2009' },
+  { file: 'Ralph Eugene Meatyard, Untitled, 1960.jpg', caption: 'Ralph Eugene Meatyard, Untitled, 1960' },
+  { file: 'Robert Cornelius, Self-Portrait, 1839.jpg', caption: 'Robert Cornelius, Self-Portrait, 1839' },
+  { file: 'Robert Frank, Hold Still Keep Going, Mabou, 1989.jpg', caption: 'Robert Frank, Hold Still Keep Going, Mabou, 1989' },
+  { file: 'Roger Fenton, The-valley-of-the-shadow-of-death, 1855.jpg', caption: 'Roger Fenton, The Valley of the Shadow of Death, 1855' },
+  { file: 'Samuel Fosso, Self-Portrait, 1976-77.jpg', caption: 'Samuel Fosso, Self-Portrait, 1976\u201377' },
+  { file: 'Sohei Nishino, London, May-Aug 2010.jpg', caption: 'Sohei Nishino, London, May\u2013Aug 2010' },
+  { file: 'Stephen Shore, Horeshoe Bend Motel, Lovell, Wyoming, July 16, 1973.jpg', caption: 'Stephen Shore, Horseshoe Bend Motel, Lovell, Wyoming, 16 July 1973' },
+  { file: 'Tereza Cervenova, Borough Market, London 8th, June, 2017, from the-series June, 2016-18.jpg', caption: 'Tereza \u010cervenov\u00e1, Borough Market, London, 8 June 2017, from the series June, 2016\u201318' },
+  { file: 'Thomas Albdorf, Driggs Avenue 3 (Situation With Pidgeons) 2021.jpg', caption: 'Thomas Albdorf, Driggs Avenue 3 (Situation With Pigeons), 2021' },
+  { file: 'Thomas Demand, Copyshop, 1999.jpg', caption: 'Thomas Demand, Copyshop, 1999' },
+  { file: 'Thomas Hoepker, Young people on the Brooklyn waterfront, 11 September 2001.jpg', caption: 'Thomas Hoepker, Young People on the Brooklyn Waterfront, 11 September 2001' },
+  { file: 'Thomas Sutton_ James Clerk Maxwell, Tartan Ribbon, 1930s print of orginal 1861 negative.jpg', caption: 'Thomas Sutton & James Clerk Maxwell, Tartan Ribbon, 1861 (1930s print)' },
+  { file: 'Trish Morrissey, Sylvia Westbrook, August 2nd, 2005.jpg', caption: 'Trish Morrissey, Sylvia Westbrook, 2 August 2005' },
+  { file: 'Wilhelm Rontgen, The bones of a hand with a ring on one finger, viewed through x-ray, 1895.jpg', caption: 'Wilhelm R\u00f6ntgen, The Bones of a Hand with a Ring, X-ray, 1895' },
+  { file: 'William Henry Fox Talbot, Latticed Window, 1835.jpg', caption: 'William Henry Fox Talbot, Latticed Window, 1835' },
+  { file: 'Yang Yongliang, The Landscape Without Night, 2012.jpg', caption: 'Yang Yongliang, The Landscape Without Night, 2012' },
+];
+
+const QUOTES = [
+  { text: '...in the same way that a [film] poster creates an expectation for the film, so a genre in photography creates an expectation for the meanings to be derived from that type of photograph. Each genre creates an expectation for particular types of understanding. Whether the photograph gratifies that expectation is another matter.', attr: 'David Bate, Photography: The Key Concepts' },
+  { text: 'Photography did not spring forth from nowhere: in the expanding capitalist culture of the late 18th and 19th centuries, some people were on the look-out for cheap mechanical means for producing images.', attr: 'Steve Edwards, Photography: A Very Short Introduction' },
+  { text: 'I wonder what percentage of our understanding of the planet we live on now comes from photographs?', attr: 'Floris Neususs' },
+  { text: 'The camera does more than just see the world; it is also touched by the world. Light bounces off an object or a body and into the camera, activating a light-sensitive surface and creating an image. Photographs are therefore designated as indexical signs, images produced as a consequence of being directly affected by the objects to which they refer.', attr: 'Geoffrey Batchen' },
+  { text: "The revolutionary change in photography's cultural presence wasn't led by photographers, nor publishers or camera manufacturers but by telephone engineers.", attr: 'Stephen Mayes' },
+  { text: 'Most of the billions of photographs that are taken with cameras every year are made for purposes that have nothing to do with art. They are made for quite specific reasons, some exalted and some mundane, and their value is dependent on how well they serve a purpose that, more often than not, has nothing to do with photography itself.', attr: 'Merry A. Foresta, Photography Changes Everything' },
+  { text: 'I have seen my death.', attr: 'Anna Bertha Ludwig, wife of Wilhelm Conrad R\u00f6ntgen, inventor of the X-ray' },
+  { text: 'Photographs are not, as is often assumed, a mechanical record. Every time we look at a photograph, we are aware, however slightly, of the photographer selecting that sight from an infinity of other possible sights.', attr: 'John Berger' },
+  { text: 'The painter constructs, the photographer discloses.', attr: 'Susan Sontag' },
+  { text: 'There is nothing as mysterious as a fact clearly described.', attr: 'Garry Winogrand' },
+  { text: "Photography is a system of visual editing. At bottom, it is a matter of surrounding with a frame a portion of one\u2019s cone of vision, while standing in the right place at the right time. Like chess, or writing, it is a matter of choosing from among given possibilities, but in the case of photography the number of possibilities is not finite but infinite.", attr: 'John Szarkowski' },
+  { text: 'In photography you can never express yourself directly, only through optics, the physical and chemical processes. It is this sort of submission to the object and abnegation of yourself that is exactly what pleases me about photography. What is extraordinary is that, despite this submission and abnegation, the personality of the photographer shines through all the obstacles. In the end, images convey personality just as strongly as in a drawing.', attr: 'Brassa\u00ef' },
+  { text: "A lot of people seem to think that art or photography is about the way things look, or the surface of things. That\u2019s not what it\u2019s about for me. It\u2019s really about relationships and feelings [...] It\u2019s about emotional obsession and empathy.", attr: 'Nan Goldin' },
+  { text: 'I don\u2019t think the essence of photography has the hand in it so much. The essence is done very quietly with a flash of the mind, and with a machine. I think too that photography is editing, editing after the taking. After knowing what to take, you have to do the editing.', attr: 'Walker Evans' },
+  { text: 'Remember, not everything is a picture. A good eye can edit before the shutter opens.', attr: 'Craig Coverdale' },
+  { text: 'Whatever it grants to vision and whatever its manner, a photograph is always invisible: it is not it that we see.', attr: 'Roland Barthes' },
+  { text: "...pictures aren\u2019t facts. There\u2019s nothing factual about them. They\u2019re mental space. That\u2019s what abstraction is about, making a kind of psychological space.", attr: 'David Maisel' },
+  { text: "It\u2019s not that I don\u2019t care about content, but content is not the only way a photograph has meaning.", attr: 'James Welling' },
+  { text: 'A photographer must be prepared to catch and hold on to those elements which give distinction to the subject or lend it atmosphere. They are often momentary, chance-sent things: a gleam of light on water, a trail of smoke from a passing train, a cat crossing a threshold, the shadows cast by a setting sun. Sometimes they are a matter of luck; the photographer could not expect or hope for them.', attr: 'Bill Brandt' },
+  { text: "All the canonical works of photography retain some trace of the medium\u2019s underlying, life-giving, accident-proneness.", attr: 'Janet Malcolm' },
+  { text: 'Photography is prone to chance. Every taker of snapshots knows that. The first look at a hastily taken picture is an act of discovery [...] The conspicuous role of chance in photography sets it apart from arts such as painting or literature. Whereas in a traditionally deliberate art form, such as the novel, chance comes across as something contrived, in photography it comes across as something encountered.', attr: 'Robin Kelsey, Photography and the Art of Chance' },
+  { text: 'It comes down to risk, again and again. If you risk coming out, if you risk making pictures that aren\u2019t good, you might discover something in a photograph that is the key. The very doorway to your own interest.', attr: 'Joel Meyerowitz' },
+  { text: 'You have to be ready for luck.', attr: 'Neil Leifer' },
+  { text: "...a mysterious intersection of chance and attention that goes well beyond the existential surrealism of the \u2018decisive moment\u2019.", attr: 'Lee Friedlander' },
+  { text: 'Perhaps the authority of the failed negative, with all its inherent possibility, could be restored. I imagined I could construct a book \u2014 a book of pure sensations without meaning \u2014 by shuffling into a harmonious whole a series of childish images.', attr: 'Daido Moriyama' },
+  { text: 'Photographic accident may be more interesting than a consciously constructed collage.', attr: 'Boris Mikhailov' },
+  { text: 'My photographs are intended to represent something you don\u2019t see.', attr: 'Emmet Gowin' },
+  { text: 'Look at the things around you, the immediate world around you. If you are alive, it will mean something to you, and if you care enough about photography, and if you know how to use it, you will want to photograph that meaningness.', attr: 'Paul Strand' },
+  { text: 'All photographs are ambiguous. All photographs have been taken out of a continuity. If the event is a public event, this continuity is history; if it is personal, the continuity, which has been broken, is a life story [...] Discontinuity always produces ambiguity. Yet often this ambiguity is not obvious, for as soon as photographs are used with words, they produce an effect of certainty, even of dogmatic assertion.', attr: 'John Berger, Another Way of Telling' },
+  { text: "Sorry if my captioning is not up to standard, but with all that sniper fire around, I didn\u2019t dare wave a white notebook.", attr: 'Larry Burrows, to his editors' },
+  { text: 'Photographers have to impose order, bring structure to what they photograph. It is inevitable. A photograph without structure is like a sentence without grammar \u2014 it is incomprehensible, even inconceivable.', attr: 'Stephen Shore' },
+  { text: "It\u2019s very spiritual because you\u2019re suddenly seeing the coherence and the inter-connectedness of everything \u2014 left to right, top to bottom, front to back. It\u2019s all connected and somehow it\u2019s in this balance.", attr: 'Henry Wessel' },
+  { text: 'I must admit that I am not a member of the ugly school. I have a great regard for certain notions of beauty even though to some it is an old fashioned idea. Some photographers think that by taking pictures of human misery, they are addressing a serious problem. I do not think that misery is more profound than happiness.', attr: 'Saul Leiter' },
+  { text: 'Who are you who will read these words and study these photographs, and through what cause, by what chance, and for what purpose, and by what right do you qualify to, and what will you do about it...?', attr: 'James Agee' },
+  { text: 'The media\u2019s the most powerful entity on earth. They have the power to make the innocent guilty and to make the guilty innocent, and that\u2019s power.', attr: 'Malcolm X' },
+  { text: 'Fashion, by definition and in order to exist commercially, must always be \u2018new\u2019; yet it is also constantly recycling, drawing on the past for ideas.', attr: 'Stephen Bull, Photography' },
+  { text: 'There is in fact no such thing as an instantaneous photograph. All photographs are time exposures of shorter or longer duration, and each describes a discrete parcel of time. This time is always the present. Uniquely in the history of pictures, a photograph describes only that period of time in which it was made.', attr: "John Szarkowski, The Photographer\u2019s Eye" },
+  { text: 'The content of every photograph is history. It shows the moment of the image\u2019s origin that is always in the past to the moment in which it is viewed [...] What photographs do is to bring the past into the present, confronting us with the passage of time and the stillness of that which has gone.', attr: 'Tim Dant & Graeme Gilloch, Pictures of the Past: Benjamin and Barthes on Photography and History (2002)' },
+  { text: 'I long to have a memorial of every being dear to me in the world. It is not merely the likeness which is precious in such cases \u2014 but the association and the sense of nearness involved in the thing... the fact of the very shadow of the person lying there fixed forever! ...I would rather have such a memorial of one I dearly loved, than the noblest artist\u2019s work ever produced.', attr: 'Elizabeth Barrett Browning, 1843' },
+  { text: 'For me the noise of Time is not sad: I love bells, clocks, watches \u2014 and I recall that at first photographic implements were related to techniques of cabinetmaking and the machinery of precision: cameras, in short, were clocks for seeing.', attr: 'Roland Barthes, Camera Lucida' },
+  { text: 'I work and photograph while hoping to stop everything [...] In that sense, my work may be some kind of revenge drama about living now.', attr: 'Masahisa Fukase' },
+  { text: 'Seeing is not believing. It is something we do, a kind of performance [...] We assemble a world from pieces, assuming that what we see is both coherent and equivalent to reality, until we discover it is not.', attr: 'Nicholas Mirzoeff, How to See the World' },
+  { text: 'All good art is abstract in its structure.', attr: 'Paul Strand' },
+  { text: 'Perfect nonsense goes on in the world. Sometimes there is no plausibility at all.', attr: 'Nikolai Gogol' },
+  { text: 'Photography is the simultaneous recognition, in a fraction of a second, of the significance of an event as well as of a precise organisation of forms which give that event its proper expression.', attr: 'Henri Cartier-Bresson, The Decisive Moment' },
+  { text: 'My position as photographer and artist has always been about trying to make pictures that ask questions as opposed to pictures that draw conclusions. I don\u2019t see that I can do any more beyond that.', attr: 'Nick Waplington' },
+  { text: 'The camera is made up of what we might think of as three distinct parts (mediums, even): the lens, the shutter and the light-sensitive surface [...] Consider how, between the mid-1920s and the mid-1970s the shutter seemed to play a very active part in popular and more serious thinking about what photography is. The celebrated Decisive Moment, in which the lens cuts out a fragment of space and the shutter a fragment of time, was thought to be very close to the essence of the medium [...] Contemporary photographic artists seem to prefer the stoicism of the lens and the enigmas of the light sensitive surface to the ecstasy or trauma of the quick shutter.', attr: 'David Campany, from A Handful of Dust' },
+  { text: '... people do leave traces in their wake: the refuse and detritus of history; the variegated remnants of daily life; or dust. A trace is ephemeral, a locus of ambivalence suspended in the unstable space between construction and dispersal, presence and absence. A trace is very little, almost nothing. But it is also an index of life.', attr: 'Dag Holboe' },
+  { text: 'Stare. It is the way to educate your eye, and more. Stare, pry, listen, eavesdrop. Die knowing something. You are not here long.', attr: 'Walker Evans' },
+  { text: 'Boredom is just the reverse side of fascination: both depend on being outside rather than inside a situation, and one leads to the other.', attr: 'Susan Sontag' },
+  { text: 'I see no reason for recording the obvious.', attr: 'Edward Weston' },
+  { text: "To see something spectacular and recognise it as a photographic possibility is not making a very big leap. But to see something ordinary, something you\u2019d see every day, and recognise it as a photographic possibility \u2014 that\u2019s what I\u2019m interested in.", attr: 'Stephen Shore' },
+  { text: 'These extraordinary, compelling, honest, beautiful and unsparing photographs all have to do with the quality of our lives in the ongoing world: they succeed in showing us the grain of the present, like the cross-section of a tree.', attr: 'Eudora Welty, Introduction to The Democratic Forest by William Eggleston' },
+  { text: "I am afraid that there are more people than I can imagine who can go no further than appreciating a picture that is a rectangle with an object in the middle of it, which they can identify. They don\u2019t care what is around the object as long as nothing interferes with the object itself, right in the centre [...] They want something obvious. The blindness is apparent when someone lets slip the word \u2018snapshot\u2019. Ignorance can always be covered by \u2018snapshot\u2019. The word has never had any meaning. I am at war with the obvious.", attr: 'William Eggleston, 1988' },
+  { text: 'What interested me ... was to make pictures that had specific relationships with certain kinds of painting ... certain kinds of cinema ... and certain kinds of photography ... and to find a way of hybridising all that I admired about all those things...', attr: 'Jeff Wall' },
+  { text: "We\u2019re all products of what we want to project to the world. Even people who don\u2019t spend any time, or think they don\u2019t, on preparing themselves for the world out there \u2014 I think that ultimately they have for their whole lives groomed themselves to be a certain way, to present a face to the world.", attr: 'Cindy Sherman' },
+  { text: 'Photographs have an impact on us that is not solely based on seeing. And I argue that we need another approach to understanding photographs, other than simply looking at them. Listening to Images challenges us to move from vision to sound by way of touch. There is no question that images move us. But the question is, how does that happen? Photographs touch us emotionally, but also in a tactile sense through our physical encounters with them.', attr: 'Tina M. Campt' },
+  { text: 'The value of a picture is not proportionate to the trouble and expense it costs to obtain it, but to the poetry that it contains.', attr: 'P H Emerson' },
+  { text: 'What I want in poetry is a kind of abstract photography / Of the nerves, but what I like in photography / Is the poetry of literal pictures of the neighbourhood.', attr: 'John Koethe, from Pictures of Little Letters' },
+  { text: 'In the eyes: dream. The brow as if it could feel / something far off. Around the lips, a great / freshness \u2014 seductive, though there is no smile [...] Oh quickly disappearing photograph / in my more slowly disappearing hand.', attr: 'Rainer Maria Rilke, Portrait of My Father as a Young Man (trans. Stephen Mitchell)' },
+  { text: 'I like to look at pictures, all kinds. And all those things you absorb come out subconsciously one way or another [...] this kind of subconscious influence is good, and it certainly can work for one. In fact, the more pictures you see, the better you are as a photographer.', attr: 'Robert Mapplethorpe' },
+  { text: 'So that was the Lighthouse, was it? No, the other was also the Lighthouse. For nothing was simply one thing.', attr: 'Virginia Woolf, To the Lighthouse' },
+  { text: 'Say it, no ideas but in things \u2014 / nothing but the blank faces of the houses / and cylindrical trees / bent, forked by preconception and accident \u2014 / split, furrowed, creased, mottled, stained \u2014 / secret \u2014 into the body of the light!', attr: "William Carlos Williams, from 'Paterson' (1927)" },
+  { text: 'The camera should be used for a recording of life, for rendering the very substance and quintessence of the thing itself, whether it be polished steel or palpitating flesh.', attr: 'Edward Weston, 1924' },
+  { text: 'Surrealism lies at the heart of the photographic enterprise: in the very creation of a duplicate world, of a reality in the second degree, narrower but more dramatic than the one perceived by natural vision.', attr: 'Susan Sontag, On Photography (1977)' },
+  { text: 'Over time the true revolutions will be carried out through the power of images.', attr: 'Andr\u00e9 Breton' },
+  { text: "The desire for transparency, immediacy, the wish that the viewer might see the other with the photographer\u2019s own eyes, is inevitably frustrated by the very mechanisms of the camera, which, despite the best intentions of the photographer, cannot penetrate beyond that which is simply, stupidly there.", attr: 'Abigail Solomon-Godeau' },
+  { text: "The photographer was thought to be an acute but non-interfering observer \u2013 a scribe, not a poet. But as people quickly discovered that nobody takes the same picture of the same thing, the supposition that cameras furnish an impersonal, objective image yielded to the fact that photographs are evidence not only of what\u2019s there but of what an individual sees, not just a record but an evaluation of the world. It became clear that there was not just a simple activity called seeing (recorded by, aided by cameras) but \u2018photographic seeing\u2019, which was both a new way for people to see and a new activity for them to perform.", attr: 'Susan Sontag' },
+  { text: 'every photograph is the result of specific and, in every sense, significant distortions which render its relation to any prior reality deeply problematic [...] The indexical nature of the photograph \u2014 the causative link between the pre-photographic referent and the sign \u2014 is therefore highly complex, irreversible, and can guarantee nothing at the level of meaning.', attr: 'John Tagg, The Burden of Representation' },
+  { text: 'Like the state, the camera is never neutral.', attr: 'John Tagg' },
+  { text: 'One of the key concerns of my work has been the attempt to photograph things that can no longer be seen. My interest in this paradox arises from a kind of intuition that the past remains, and that history\u2019s traces are somehow imprinted on the spaces, buildings and landscapes where significant events have taken place.', attr: "Diana Matar, on her series \u2018Evidence\u2019" },
+  { text: "I wanted to do a statement on how little we see [...] The viewer, at a certain point, doesn\u2019t know if the image is taken 20cm from the ground or 100m above. The idea to bring this confusion about what we see. Is it big? Is it small?", attr: "Sophie Ristelhueber, on her series \u2018Fait\u2019 (1992)" },
+  { text: 'Today, when words have lost their material base \u2014 in other words, their reality \u2014 and seem suspended in mid-air, a photographer\u2019s eye can capture fragments of reality that cannot be expressed in language as it is. He can submit those images as a document to be considered alongside language and ideology.', attr: 'Manifesto of the Provoke Group, 1968' },
+  { text: 'Art is always conflict\u2026 It is art\u2019s task to make manifest the contradictions of Being. To form equitable views by stirring up contradictions within the spectator\u2019s mind, and to forge accurate intellectual concepts from the dynamic clash of opposing passions.', attr: 'Sergei Eisenstein, A Dialectic Approach to Film Form' },
+  { text: "Eisenstein saw film editing, or montage, as a process which operated according to the Marxist dialectic. This dialectic is a way of looking at human history and experience as a perpetual conflict in which a force (thesis) collides with a counterforce (antithesis) to produce from their collision a wholly new phenomenon (synthesis), which is not the sum of the two forces but something greater than and different from them both.", attr: 'David Cook, A History of Narrative Film' },
+  { text: 'I got a brainstorm in the middle of the night to do this little book called Twentysix Gasoline Stations. I knew the title. I knew it would be photographs of twenty-six gasoline stations [...] I realised that for the first time this book had an inexplicable thing I was looking for, and that was a kind of a \u201cHuh?\u201d That\u2019s what I\u2019ve always worked around. All it is is a device to disarm somebody with my particular message.', attr: 'Ed Ruscha' },
+  { text: 'I am trying to make my photography automatic, to use my camera as I would a typewriter.', attr: 'Man Ray' },
+  { text: 'Probably one of the worst things to happen to photography is that cameras have viewfinders.', attr: 'John Baldessari' },
+  { text: 'Chance is always there. We all use it. The difference is a poor photographer meets chance one out of a hundred times and a good photographer meets chance all the time.', attr: 'Brassa\u00ef' },
+  { text: "At the core of Surrealist aesthetics, the marvellous was sometimes revealed rather than created. Always on the look-out for quirks of fate in everyday life, the artists sought this notion in the most unexpected places, in the banality, even triviality, of everyday life [...] From that point, the frontiers between work of art and document became blurred, the artist turned into a wanderer, a collector of \u2018finds\u2019, of \u2018petrifying coincidences\u2019, incessantly questioning the familiar order to unearth its \u2018bewildering strangeness\u2019.", attr: 'La Subversion des Images, surr\u00e9alisme, photographie, film (Pompidou Centre, 2009)' },
+  { text: 'The street, which I thought capable of divulging its unexpected detours to my life, the street with its anxiety and views, was my true element: nowhere else could I draw such a wind of possibility.', attr: 'Andr\u00e9 Breton' },
+  { text: 'The crowd is his element, as the air is that of birds and water of fishes. His passion and his profession are to become one flesh with the crowd. For the perfect fl\u00e2neur, for the passionate spectator, it is an immense joy to set up house in the heart of the multitude, amid the ebb and flow of movement, in the midst of the fugitive and the infinite.', attr: 'Charles Baudelaire, The Painter of Modern Life (1863)' },
+  { text: 'The photographer is an armed version of the solitary walker reconnoitering, stalking, cruising the urban inferno, the voyeuristic stroller who discovers the city as a landscape of voluptuous extremes.', attr: 'Susan Sontag, On Photography' },
+  { text: "It\u2019s almost as if there\u2019s a smell in the air and I\u2019m being forewarned that a moment is approaching so I need to have the camera ready. In a sense I never set out to do anything other than make myself available, to allow that moment where there\u2019s an upsurge of energy from the unconscious mind into the conscious mind which is the moment when I know I have to make a photograph.", attr: 'Peter Fraser' },
+  { text: 'I have assembled photographic glass negatives\u2026 in all the old streets of Old Paris, artistic documents showing the beautiful civil architecture from the 16th to the 19th century. This enormous documentary and artistic collection is now finished. I can say that I possess the whole of Old Paris.', attr: 'Eug\u00e8ne Atget' },
+  { text: 'I report on young, rebellious scum with pleasure \u2026 I rejoice in everything. Love. Courage. Beauty. Also blood, sweat and tears. Keep your eyes open.', attr: 'Ed van der Elsken' },
+  { text: 'The surrealism of my pictures was nothing but the real made eerie by vision. I was trying to express reality, for there is nothing more surrealist.', attr: 'Brassa\u00ef' },
+  { text: 'Everything is magical for the child \u2026 Art alone can exorcise these phantasms. For it is indeed the power of magic that is at the origin of the power of art. To trace a line, a figure, gives to the child a sense of power and domination that belongs only to the magician. It is only through art that he can bend the world to his will.', attr: 'Brassa\u00ef, on graffiti and the art of children' },
+  { text: 'By wandering aimlessly, all places became equal and it no longer mattered where he was. On his best walks, he was able to feel that he was nowhere. And this, finally, was all he ever asked of things: to be nowhere.', attr: 'Paul Auster, City of Glass' },
+  { text: "After I\u2019ve photographed I wait quite a while before I start to look at the stuff that I\u2019ve photographed... for a year, two years, sometimes longer than that. I need to be distant from that subjective experience so I can see what the photograph itself contains.", attr: 'Henry Wessel' },
+  { text: 'I\u2019ve been doing pieces the significance and experience of which is defined as completely as possible by the viewer\u2019s reaction and interpretation. Ideally the work has no meaning or independent existence outside of its function as a medium of change.', attr: 'Adrian Piper' },
+  { text: 'I would photograph an idea rather than an object, a dream rather than an idea.', attr: 'Man Ray' },
+  { text: 'Photography is not a sport. It has no rules. Everything must be dared and tried.', attr: 'Bill Brandt' },
+  { text: 'Art exists so that one may recover the sensation of life; it exists to make one feel things, to make the stone stony [...] the technique of art is to make objects \u2018unfamiliar\u2019, to make forms difficult.', attr: 'Victor Shklovsky, Art as Technique (1917)' },
+  { text: 'Of course, it\u2019s not easy to photograph the invisible and make a coherent piece of work with it. But that is no reason not to try. Quite the opposite. If you attempt something difficult, you may fail to some degree, but if you succeed, then you have really done something.', attr: 'Gerry Badger' },
+  { text: 'There is something predatory in the act of taking a picture. To photograph people is to violate them, by seeing them as they never see themselves, by having knowledge of them that they can never have; it turns people into objects that can be symbolically possessed.', attr: 'Susan Sontag, On Photography (1977)' },
+  { text: 'A statement once made by Trinh T. Minh-ha about not intending to speak about her subjects but rather to speak nearby has always stuck in my mind.', attr: 'Anthony Luvera' },
+  { text: 'Everything inherently has a politics that resides within it \u2026 One of the things I strongly believe in is that everyone already has a voice. Some people are in a position to be able to articulate their views in ways in which it will be heard.', attr: 'Anthony Luvera' },
+  { text: "\u2018Beauty is truth, truth beauty,\u2019 \u2014 that is all ye know on earth, and all ye need to know.", attr: 'John Keats' },
+  { text: 'ONE of the greatest difficulties in writing a book for beginners in any art is to make it simple enough. Nine out of ten photographers are, unfortunately, quite ignorant of art; some think manipulation all-sufficient, others are too much absorbed in the scientific principles involved to think of making pictures.', attr: 'Henry Peach Robinson, 1869' },
+  { text: 'This book reveals why a photograph need not be crisply rendered or \u2018correctly\u2019 exposed, colour-balanced, framed, or even composed by the photographer in order to have artistic merit. Artists are pushing the boundaries of photography in so many ways that their efforts are arguably redefining the medium.', attr: 'Jackie Higgins, Why It Does Not Have to Be in Focus' },
+  { text: 'Photography, born of and shaped by science, transformed the nature of observation and stretched the parameters of knowledge and humanity\u2019s sense of itself [...] Photographs were immediately marshalled into service to help answer the most practical and existential of questions: What is that? Where and who are we? What happens next?', attr: 'Marvin Heiferman, Seeing Science' },
+  { text: 'Today science needs its voice. It needs the vivification of the visual image, the warm human quality of imagination added to its austere and stern disciplines. It needs to speak to the people in terms they will understand. They can understand photography preeminently.', attr: 'Berenice Abbott, 1939' },
+  { text: 'The most beautiful thing we can experience is the mysterious.', attr: 'Albert Einstein' },
+  { text: 'In photography we possess an extraordinary instrument for reproduction. But photography is much more than that. Today it is a method for bringing optically something entirely new into the world.', attr: 'L\u00e1szl\u00f3 Moholy-Nagy' },
+  { text: 'Only photography has been able to divide human life into a series of moments; each of them has the value of a complete existence.', attr: 'Eadweard Muybridge' },
+  { text: "It\u2019s hard to tell the story if you don\u2019t have a stunning image to back it up.", attr: 'Ray Villard, public relations director for the Hubble Space Telescope project' },
+  { text: 'For millennia, artists and mystics have pondered the question of how to represent that which, by definition, cannot or must not be represented.', attr: 'Trevor Paglen' },
+  { text: 'The new world will not need little pictures. If it needs a mirror, it has the photograph and the cinema.', attr: 'El Lissitzky' },
+  { text: 'Street photography has trained my eyes and my ears [...] even if I haven\u2019t seen something, if I hear it that\u2019s when I\u2019m preparing to take a shot [...] it\u2019s interesting how my body reacts to certain things, how alert I am.', attr: 'Adama Jalloh' },
+  { text: "I don\u2019t think about photography as a \u2018I have a camera; I will shoot some pictures because\u2026\u2019. Sometimes I see someone that looks interesting and think \u2018I\u2019d like to take some pictures of them\u2019 but I don\u2019t bring my camera with me. I think photography is like a story, a concept, so if I find an interesting story I write and research before shooting it.", attr: 'Alba Zari' },
+  { text: "While the notion of a document is historically tied to ideas of certitude and confirmation, this certitude has all but vanished from contemporary consciousness. The experiences of the 20th century, its large-scale enterprises of propaganda and disinformation, have created an attitude which could be called habitual distrust as well as advanced media literacy.", attr: 'Maria Lind & Hito Steyerl, The Greenroom' },
+  { text: 'Memory does not make films. It makes photographs.', attr: 'Milan Kundera' },
+  { text: 'The past is a foreign country; they do things differently there.', attr: 'L. P. Hartley, The Go-Between' },
+  { text: 'With its special capacity for implication and dissemination, photography gives us voyeuristic entry to traumatic events, usually after they have occurred.', attr: "Karen Irvine, Curator of \u2018Crime Unseen\u2019, Museum of Contemporary Photography" },
+  { text: 'A photograph passes for incontrovertible proof that a given thing happened.', attr: 'Susan Sontag, On Photography' },
+  { text: 'Of all the means of expression, photography is the only one that fixes a precise moment in time. We play with subjects that disappear; and when they\u2019re gone, it\u2019s impossible to bring them back to life.', attr: 'Henri Cartier-Bresson' },
+  { text: 'Does a photograph really enable us to remember a person as he really was, or an event as it actually happened? Does the sight of someone bring back the sound of her voice, her smell, the way she walked? Images can stimulate memories but memories are not images. They are sensations. As such, they cannot be encompassed within the boundaries of visual representation.', attr: 'Forget Me Not: Photography and Remembrance (National Media Museum)' },
+  { text: 'We assemble a world from pieces, assuming that what we see is both coherent and equivalent to reality. Until we discover it is not.', attr: 'Nicholas Mirzoeff, How to See the World' },
+  { text: 'Light is pure presence. Or so it seems to our perception. But the fact that light has a specific velocity, i.e., it is not everywhere simultaneously, contradicts direct experience \u2014 because we cannot see that the sun\u2019s brilliance is eight minutes old when it arrives on earth, or that even pale moonshine requires a full 1.3 seconds before reaching the human retina.', attr: 'Johan \u00d6sterholm, Cosmic Darkroom (Photographic Museum of Humanity, 2019)' },
+  { text: 'I want people to be visually attracted to the images that I create, and then I want them to read the caption and be shocked by what they read, by what the image represents. I want to leave a lasting memory, an awareness with them that they may want to think about what they buy, change their habits and think about their own footprint in regards to the consumption of plastics.', attr: 'Mandy Barker' },
+];
+
+// Fisher-Yates shuffle
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let imgQueue = [], quoteQueue = [];
+let imgIndex = 0, quoteIndex = 0;
+
+function refillQueues() {
+  if (imgIndex >= imgQueue.length) { imgQueue = shuffle(IMAGES); imgIndex = 0; }
+  if (quoteIndex >= quoteQueue.length) { quoteQueue = shuffle(QUOTES); quoteIndex = 0; }
+}
+
+const imgEl = document.getElementById('img');
+const captionEl = document.getElementById('caption');
+const quoteEl = document.getElementById('quote');
+const attrEl = document.getElementById('attr');
+const counterEl = document.getElementById('counter');
+
+function remix() {
+  refillQueues();
+  const img = imgQueue[imgIndex++];
+  const q = quoteQueue[quoteIndex++];
+
+  // Fade out
+  imgEl.classList.add('fading');
+  quoteEl.classList.add('fading');
+  attrEl.classList.add('fading');
+
+  setTimeout(() => {
+    // Update image
+    const newImg = new Image();
+    newImg.onload = () => {
+      imgEl.src = newImg.src;
+      imgEl.alt = img.caption;
+      captionEl.textContent = img.caption;
+      imgEl.classList.remove('fading');
+    };
+    newImg.onerror = () => {
+      imgEl.src = '';
+      captionEl.textContent = img.caption + ' [image not found]';
+      imgEl.classList.remove('fading');
+    };
+    newImg.src = 'images/' + encodeURIComponent(img.file).replace(/%20/g, '%20');
+
+    // Update quote
+    quoteEl.textContent = q.text;
+    attrEl.textContent = '\u2014\u00a0' + q.attr;
+    quoteEl.classList.remove('fading');
+    attrEl.classList.remove('fading');
+  }, 340);
+}
+
+// Keyboard shortcut
+document.addEventListener('keydown', e => {
+  if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'r') {
+    e.preventDefault();
+    remix();
+  }
+});
+
+
+// Lightbox
+function openLightbox() {
+  if (window.innerWidth > 700) return;
+  const src = document.getElementById('img').src;
+  if (!src) return;
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLightbox();
+});
+
+// Initial load
+remix();
+
+// About panel
+function toggleAbout() {
+  const overlay = document.getElementById('aboutOverlay');
+  const isOpen = overlay.classList.contains('open');
+  overlay.classList.toggle('open');
+  overlay.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
+}
+
+document.getElementById('aboutOverlay').addEventListener('click', function(e) {
+  if (e.target === this) toggleAbout();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const overlay = document.getElementById('aboutOverlay');
+    if (overlay.classList.contains('open')) toggleAbout();
+  }
+});
+</script>
+</body>
+</html>
